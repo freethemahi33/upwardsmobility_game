@@ -46,19 +46,18 @@ export function UpwardMobilityBoard ({ctx, G, moves, events}){
             break;
         case "eventScreen":
             // console.log("This is current event state description: " + currentEvent.description)
-            let randInt = Math.floor(Math.random() * eventsArray.length);
-            let currentEvent = eventsArray[randInt];
-            moves.setCurrentEvent(currentEvent);
+            // let randInt = Math.floor(Math.random() * eventsArray.length);
+            // let currentEvent = eventsArray[randInt];
 
             eventScreenContents = (
                 <div>
                     <div>
-                        <span className="inGameText">{currentEvent.description}</span>
+                        <span className="inGameText">{G.currentEvent.description}</span>
                     </div>
                     <div className="event-button-container">
-                        {currentEvent.options.map((option, index) => (
+                        {G.currentEvent.options.map((option, index) => (
                             <button key={index} onClick={() => {
-                                if (index === currentEvent.correctAnswer) {
+                                if (index === G.currentEvent.correctAnswer) {
                                     moves.addCurrency(2);
                                     events.setPhase("pickUpItemScreen");
                                     // {console.log("Current event: " + G.currentEvent)}
@@ -76,15 +75,15 @@ export function UpwardMobilityBoard ({ctx, G, moves, events}){
         case "useItemScreen":
             eventScreenContents = (
                 <div>
-                    {currentEvent}
+                    {G.currentEvent}
                 </div>
             )
             break;
         case "correctAnswerScreen":
-            console.log("Current event from correct answer screen: " + currentEvent.description);
+            console.log("Current event from correct answer screen: " + G.currentEvent.description);
             eventScreenContents = (
                 <div>
-                    <span className="inGameText">Correct Answer Screen{currentEvent && currentEvent.onCorrect}</span>
+                    <span className="inGameText">Correct Answer Screen{G.currentEvent.onCorrect}</span>
                     <div className="event-button-container">
                         <button onClick={() => events.setPhase("pickUpItemScreen")} className="answerButton">Pick Up Item</button>
                     </div>
@@ -93,11 +92,11 @@ export function UpwardMobilityBoard ({ctx, G, moves, events}){
             break;
 
         case "pickUpItemScreen":
-            console.log("Current event from pick up item screen: " + currentEvent.onCorrect);
+            console.log("Current event from pick up item screen: " + G.currentEvent.onCorrect);
 
             eventScreenContents = (
                 <div>
-                    <span className="inGameText">pick up item screen {currentEvent.onCorrect}</span>
+                    <span className="inGameText">pick up item screen {G.currentEvent.onCorrect}</span>
                     <div className="event-button-container">
                         <button onClick={() => { events.setPhase("endTurnScreen") }} className="answerButton">Proceed</button>
                     </div>
@@ -108,7 +107,7 @@ export function UpwardMobilityBoard ({ctx, G, moves, events}){
         case "wrongAnswerScreen":
             eventScreenContents = (
                 <div>
-                    <span className="inGameText">wrong answer screen</span>
+                    <span className="inGameText">{G.currentEvent.onIncorrect}</span>
                     <div className="event-button-container">
                         <button onClick={() => events.setPhase("endTurnScreen")} className="answerButton">End Turn</button>
                     </div>

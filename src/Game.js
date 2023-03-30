@@ -1,7 +1,7 @@
 import { TurnOrder, Client, Server, Game } from "boardgame.io/core";
-// import { getEvent} from "./eventsfile";
 import react from 'react';
 import { UpwardMobilityBoard } from "./Board";
+import {eventsArray} from "./eventsfile";
 export const UpwardsMobility = {
 
     // Turn phase flow
@@ -96,6 +96,8 @@ export const UpwardsMobility = {
                   }
               }
           });
+
+          G.currentEvent = eventsArray[Math.floor(Math.random() * eventsArray.length)];
 
           events.setPhase("eventOrItemScreen");
       },
