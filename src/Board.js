@@ -1,4 +1,5 @@
-import React, {Component} from 'react'
+import React, {Component, useEffect} from 'react'
+
 import dice from './GameDieBigpng.png'
 import playerList from './PlayerListBackground.png'
 import gamelogo from './Upward_Mobility_big.png'
@@ -9,11 +10,9 @@ import { eventsArray} from "./eventsfile";
 
 export function UpwardMobilityBoard ({ctx, G, moves, events}){
 
-    // console.log("This is the current phase: " + ctx.phase)
-    // console.log("Current player : " + ctx.currentPlayer + " at position " + G.players[ctx.currentPlayer].position)
-
-    // console.log("This is the current event from G: " + G.currentEvent)
-    // console.log("This is the current event from currentEvent: " + currentEvent)
+    useEffect(() => {
+        console.log("testing useEffect")
+    }, );
 
     const { moveDist } = G;
 
@@ -80,7 +79,6 @@ export function UpwardMobilityBoard ({ctx, G, moves, events}){
             )
             break;
         case "correctAnswerScreen":
-            console.log("Current event from correct answer screen: " + G.currentEvent.description);
             eventScreenContents = (
                 <div>
                     <span className="inGameText">Correct Answer Screen{G.currentEvent.onCorrect}</span>
@@ -92,7 +90,7 @@ export function UpwardMobilityBoard ({ctx, G, moves, events}){
             break;
 
         case "pickUpItemScreen":
-            console.log("Current event from pick up item screen: " + G.currentEvent.onCorrect);
+            // console.log("Current event from pick up item screen: " + G.currentEvent.onCorrect);
 
             eventScreenContents = (
                 <div>

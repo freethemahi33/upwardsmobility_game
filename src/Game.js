@@ -1,7 +1,7 @@
 import { TurnOrder, Client, Server, Game } from "boardgame.io/core";
 import react from 'react';
 import { UpwardMobilityBoard } from "./Board";
-import {eventsArray} from "./eventsfile";
+import {eventsArray, itemsArray, buffsArray} from "./eventsfile";
 export const UpwardsMobility = {
 
     // Turn phase flow
@@ -118,18 +118,18 @@ export const UpwardsMobility = {
             G.players[ctx.currentPlayer].position -= moveDist;
         },
 
-        pickUpItem: ({G, ctx, events}) => {
-            const itemCell = G.board[G.players[ctx.currentPlayer].position];
-            const itemRef = itemCell.item;
+        pickUpItem: ({G, ctx, events}, id) => {
+            // const itemCell = G.board[G.players[ctx.currentPlayer].position];
+            // const itemRef = itemCell.item;
 
-            G.players[ctx.currentPlayer].inventory.push(itemRef);
+            G.players[ctx.currentPlayer].inventory.push(itemsArray[id]);
 
         },
 
         staffOfMoMoney: ({G, ctx, events}) => {
             // G.players[ctx.currentPlayer].buffs.push({ type: "moMoneyBuff", duration: 3 });
             console.log("staff of mo money function");
-            G.players[ctx.currentPlayer] += Math.random() * 5;
+            G.players[ctx.currentPlayer].currency += Math.random() * 5;
         },
 
         useItem: ({G, ctx, events}, item) => {
@@ -142,7 +142,7 @@ export const UpwardsMobility = {
         },
 
         applyBuff: ({ G, ctx }, playerId, buffType, duration) => {
-            G.players[playerId].buffs.push({ type: buffType, duration: duration });
+            G.players[ctx.currentPlayer].buffs.push({ type: buffType, duration: duration });
         },
 
         moveNoEvent: ({ G, ctx }) => {
