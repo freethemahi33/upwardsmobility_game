@@ -94,7 +94,7 @@ export function UpwardMobilityBoard ({ctx, G, moves, events}){
 
             eventScreenContents = (
                 <div>
-                    <span className="inGameText">pick up item screen {G.currentEvent.onCorrect}</span>
+                    <span className="inGameText">{G.currentEvent.eventReward.description}</span>
                     <div className="event-button-container">
                         <button onClick={() => { events.setPhase("endTurnScreen") }} className="answerButton">Proceed</button>
                     </div>

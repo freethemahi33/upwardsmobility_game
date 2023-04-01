@@ -11,10 +11,12 @@ export const eventsArray = [
         onCorrect: "The wizard is dumbfounded and spontaneously combusts into 2 coins which are added to your wallet!",
         onIncorrect: "The wizard slaps you and you move back 3 spaces",
         correctAnswer: 0,
-        // item name:
-        // item description:
-        // item effect:
-        item: { name: "Staff of MoMoney", description: "staff of mo money description", effect: UpwardsMobility.moves.staffOfMoMoney }
+        // item: { name: "Staff of MoMoney", description: "staff of mo money description" }
+        eventReward: {
+            type: "item",
+            description: "The wizard has dropped his staff of Mo Money which you pick up and is added to your inventory.",
+            item: { name: "Staff of MoMoney", description: "staff of mo money description" }
+        }
     },
     {
         id: 2,
@@ -26,10 +28,11 @@ export const eventsArray = [
         ],
         onCorrect: "You find a 20 currency and add it to your wallet!",
         onIncorrect: "The chest is booby-trapped and you lose 3 coins",
-        // apply buff or we pick up item
-        // eventResult: { description: "The wizard also drops his staff which you can use to magically " +
-        //         "generate a random currency between 0 and 10!", action: moves.pickUpItem(1)},
         correctAnswer: 1,
+        eventReward: {
+            type: "buff",
+            buff: { name: "Buff of Mo Money", description: "buff of mo money description", duration: 3 }
+        }
     },
     {
         id: 3,
@@ -52,7 +55,7 @@ export const eventsArray = [
             "Feed the cat"
         ],
         onCorrect: "The cat is happy and gives you 2 coins",
-        onIncorrect: "The cat becomes violently angry and attacks you, you lose 3 coins",
+        onIncorrect: "The cat becomes violently angry and attacks you, stealing 3 coins",
         // inCorrectEffect: UpwardsMobility.moves.loseCurrency(3),
         correctAnswer: 0,
     },
@@ -63,7 +66,6 @@ export const itemsArray = [
         id: 1,
         name: "Staff of MoMoney",
         description: "Randomly generate currency between 0 and 10",
-        // effect: UpwardsMobility.moves.staffOfMoMoney
     }
     ];
 

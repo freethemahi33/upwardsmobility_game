@@ -84,20 +84,35 @@ export const UpwardsMobility = {
           G.players[ctx.currentPlayer].position += moveDist;
 
           // Check for players active buffs
+          // G.players[ctx.currentPlayer].buffs.forEach((buff) => {
+          //     if (buff.type === "moMoneyBuff") {
+          //         moveDist += 1;
+          //         buff.duration--;
+          //         if (buff.duration === 0) {
+          //             G.players[ctx.currentPlayer].buffs.splice(
+          //                 G.players[ctx.currentPlayer].buffs.indexOf(buff),
+          //                 1
+          //             );
+          //         }
+          //     }
+          // });
+
           G.players[ctx.currentPlayer].buffs.forEach((buff) => {
-              if (buff.type === "moMoneyBuff") {
-                  moveDist += 1;
-                  buff.duration--;
-                  if (buff.duration === 0) {
-                      G.players[ctx.currentPlayer].buffs.splice(
-                          G.players[ctx.currentPlayer].buffs.indexOf(buff),
-                          1
-                      );
-                  }
+              switch (buff) {
+                    case "Buff of Mo Money":
+                        G.players[ctx.currentPlayer].currency += 2;
               }
           });
 
+
           G.currentEvent = eventsArray[Math.floor(Math.random() * eventsArray.length)];
+
+          if (G.currentEvent.eventReward.type === "item") {
+            G.players[ctx.currentPlayer].inventory.push(G.currentEvent.item.name);
+            }
+          if (G.currentEvent.eventReward.type === "buff") {
+            G.players[ctx.currentPlayer].buffs.push(G.currentEvent.buff.name);
+            }
 
           events.setPhase("eventOrItemScreen");
       },
@@ -118,41 +133,35 @@ export const UpwardsMobility = {
             G.players[ctx.currentPlayer].position -= moveDist;
         },
 
-        pickUpItem: ({G, ctx, events}, id) => {
-            // const itemCell = G.board[G.players[ctx.currentPlayer].position];
-            // const itemRef = itemCell.item;
+        // pickUpItem: ({G, ctx, events}, id) => {
+        //     // const itemCell = G.board[G.players[ctx.currentPlayer].position];
+        //     // const itemRef = itemCell.item;
+        //
+        //     G.players[ctx.currentPlayer].inventory.push(itemsArray[id]);
+        //
+        // },
 
-            G.players[ctx.currentPlayer].inventory.push(itemsArray[id]);
-
-        },
-
-        staffOfMoMoney: ({G, ctx, events}) => {
-            // G.players[ctx.currentPlayer].buffs.push({ type: "moMoneyBuff", duration: 3 });
-            console.log("staff of mo money function");
-            G.players[ctx.currentPlayer].currency += Math.random() * 5;
-        },
+        // use item function
 
         useItem: ({G, ctx, events}, item) => {
 
           console.log("use item function");
+
+          switch (item) {
+                case "Staff of MoMoney":
+                    G.players[ctx.currentPlayer].currency += Math.random() * 5;
+                    break;
+          }
 
           const itemIndex = G.players[ctx.currentPlayer].inventory.indexOf(item);
           G.players[ctx.currentPlayer].inventory.splice(itemIndex, 1);
 
         },
 
+        // apply buff function
+
         applyBuff: ({ G, ctx }, playerId, buffType, duration) => {
             G.players[ctx.currentPlayer].buffs.push({ type: buffType, duration: duration });
-        },
-
-        moveNoEvent: ({ G, ctx }) => {
-          let moveDist = 5;
-          G.players[ctx.currentPlayer].position += moveDist;
-
-        },
-
-        setCurrentEvent: ({G, ctx}, currentEvent) => {
-            G.currentEvent = currentEvent;
         },
 
     },
