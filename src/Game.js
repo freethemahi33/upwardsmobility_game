@@ -24,13 +24,13 @@ export const UpwardsMobility = {
     players: {
       0: {
         position: 0,
-        inventory: ['Staff of MoMoney', 'Staff of NoMoney', 'Orb of Steal Yo Buffs'],
+        inventory: ["item 1", "item 2", "item 3"],
           buffs: [],
           currency: 0,
       },
       1: {
         position: 0,
-        inventory: ['Orb of MoMoney', 'Orb of NoMoney', 'Orb of Steal Yo Buffs'],
+        inventory: ["item 1", "item 2", "item 3"],
           buffs: [],
           currency: 0,
       },
@@ -97,22 +97,29 @@ export const UpwardsMobility = {
           //     }
           // });
 
-          G.players[ctx.currentPlayer].buffs.forEach((buff) => {
-              switch (buff) {
-                    case "Buff of Mo Money":
-                        G.players[ctx.currentPlayer].currency += 2;
+          G.players[ctx.currentPlayer].buffs.forEach((buff, index) => {
+              switch (buff.name) {
+                  case "Buff of Mo Money":
+                      G.players[ctx.currentPlayer].currency += 2;
+                      buff.duration--;
+
+                      if (buff.duration === 0) {
+                          G.players[ctx.currentPlayer].buffs.splice(index, 1);
+                      }
+                      break;
               }
           });
 
-
           G.currentEvent = eventsArray[Math.floor(Math.random() * eventsArray.length)];
 
+          console.log("current event reward type: ", G.currentEvent.eventReward.type)
+
           if (G.currentEvent.eventReward.type === "item") {
-            G.players[ctx.currentPlayer].inventory.push(G.currentEvent.item.name);
-            }
+              G.players[ctx.currentPlayer].inventory.push(G.currentEvent.eventReward.item.name);
+          }
           if (G.currentEvent.eventReward.type === "buff") {
-            G.players[ctx.currentPlayer].buffs.push(G.currentEvent.buff.name);
-            }
+              G.players[ctx.currentPlayer].buffs.push(G.currentEvent.eventReward.buff);
+          }
 
           events.setPhase("eventOrItemScreen");
       },
@@ -172,7 +179,7 @@ export const UpwardsMobility = {
         eventOrItemScreen: {
 
         },
-        itemScreen: {
+        useItemScreen: {
 
         },
         eventScreen: {

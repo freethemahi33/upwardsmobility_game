@@ -1,4 +1,4 @@
-import React, {Component, useEffect} from 'react'
+import React, {Component, useEffect, useState} from 'react'
 
 import dice from './GameDieBigpng.png'
 import playerList from './PlayerListBackground.png'
@@ -14,7 +14,23 @@ export function UpwardMobilityBoard ({ctx, G, moves, events}){
         console.log("testing useEffect")
     }, );
 
+    const toggleDropdown = () => {
+        console.log('showDropdown:', !showDropdown);
+        setShowDropdown(!showDropdown);
+    };
+
+    const handleItemSelect = (itemId) => {
+        // Implement your logic for handling item selection here
+        console.log(`Selected item: ${itemId}`);
+
+        // Close the dropdown after selecting an item
+        setShowDropdown(false);
+    };
+
+
     const { moveDist } = G;
+
+    const [showDropdown, setShowDropdown] = useState(false);
 
     let eventScreenContents = "";
 
@@ -74,10 +90,32 @@ export function UpwardMobilityBoard ({ctx, G, moves, events}){
         case "useItemScreen":
             eventScreenContents = (
                 <div>
-                    {G.currentEvent}
+                    <div className="dropdown-container" onClick={toggleDropdown}>
+                        <span>Click to select an item</span>
+                        <div className={`dropdown-menu${showDropdown ? '' : ' hidden'}`}>
+                            {G.players[ctx.currentPlayer].inventory.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="dropdown-item"
+                                    onClick={() => handleItemSelect(item.id)}
+                                >
+                                    {item.name}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <button
+                        className="inGameButton" id="cancel-item-button"
+                        onClick={() => events.setPhase("eventOrItemScreen")}
+                    >
+                        Cancel
+                    </button>
                 </div>
-            )
+            );
             break;
+
+
         case "correctAnswerScreen":
             eventScreenContents = (
                 <div>
