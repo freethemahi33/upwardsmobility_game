@@ -12,16 +12,62 @@ import { eventsArray} from "./eventsfile";
 // console.log("Events array: " + eventsArray)
 
 export function UpwardMobilityBoard ({ctx, G, moves, events, eventsArray}){
+    let alreadyGen = false;
 
     useEffect(() => {
         // console.log("testing useEffect")
     }, );
+
+    if (G.players[ctx.currentPlayer].position >= 10) {
+        // events.setPhase("winningGameScreen");
+        ctx.phase = "winningGameScreen"
+    }
+
+    useEffect(() => {
+        if(alreadyGen === false){
+            for(let i = 0; i< 2; i++){
+                if(G.players[i] !== undefined){
+                    let playerToken = document.createElement("div")
+                    playerToken.setAttribute("id", "playerToken" + i);
+                    playerToken.setAttribute("class", "playerToken")
+                    playerToken.style.top = "93%"
+                    if(i ==0)
+                        playerToken.style.backgroundColor = "rgba(234,0,217,1)"
+                    if(i ==1)
+                        playerToken.style.backgroundColor = "rgba(115,248,255,1)"
+                    if(i == 2)
+                        playerToken.style.backgroundColor = "rgba(0,201,60,1)"
+                    if(i == 3)
+                        playerToken.style.backgroundColor = "rgba(196,0,0,1)"
+                    if(i == 4)
+                        playerToken.style.backgroundColor = "rgba(105,0,225,1)"
+                    if(i == 5)
+                        playerToken.style.backgroundColor = "rgba(0,61,204,1)"
+
+                    document.getElementById("progressionDiv").append(playerToken)
+                }
+            }
+            alreadyGen = true;
+        }
+    })
+
+    const handleAnswerSelect = (answerIndex) => {
+        moves.selectAnswer(answerIndex);
+    };
 
     const { moveDist } = G;
 
     const [selectedItem, setSelectedItem] = useState(null);
 
     let eventScreenContents = "";
+
+    let inventoryScreenContents = (
+        <div>
+            {G.players[ctx.currentPlayer].inventory && G.players[ctx.currentPlayer].inventory.map((item, index) => (
+                <img key={index} className="InventoryImage" id={`inventoryItem-${index}`} src={item.image}/>
+            ))}
+        </div>
+    )
 
     switch (ctx.phase) {
         case "rollScreen":
@@ -42,7 +88,7 @@ export function UpwardMobilityBoard ({ctx, G, moves, events, eventsArray}){
         case "eventOrItemScreen":
             eventScreenContents = (
                 <div>
-                    <span id="rollVal" className="inGameText"> Player {ctx.currentPlayer + 1} rolls a {moveDist} landing on cell {G.players[ctx.currentPlayer].position}</span>
+                    <span id="rollVal" className="inGameText"> Player {ctx.currentPlayer + 1} with job title: {G.players[ctx.currentPlayer].jobTitle} rolls a {moveDist} landing on cell {G.players[ctx.currentPlayer].position}</span>
                     <button onClick={() => events.setPhase("eventScreen")} className="inGameButton" id="showEventButton">Show Event</button>
                     <button onClick={() => events.setPhase("useItemScreen")} className="inGameButton" id="use-item-button">Use Item</button>
                 </div>
@@ -57,6 +103,7 @@ export function UpwardMobilityBoard ({ctx, G, moves, events, eventsArray}){
                 <div>
                     <div>
                         <span className="inGameText">{G.currentEvent.description}</span>
+                        <img className="EventImage" id="EventImage" src={G.currentEvent.image} />
                     </div>
                     <div className="event-button-container">
                         {G.currentEvent.options && G.currentEvent.options.map((option, index) => (
@@ -67,6 +114,7 @@ export function UpwardMobilityBoard ({ctx, G, moves, events, eventsArray}){
                                     // {console.log("Current event: " + G.currentEvent)}
                                 } else {
                                     // moves.moveBackward(3);
+                                    moves.selectAnswer(index);
                                     events.setPhase("wrongAnswerScreen");
                                 }
                             }} className="answerButton">{option}</button>
@@ -137,28 +185,32 @@ export function UpwardMobilityBoard ({ctx, G, moves, events, eventsArray}){
             break;
 
         case "pickUpItemScreen":
-            // console.log("Current event from pick up item screen: " + G.currentEvent.onCorrect);
+            console.log("Current event from pick up item screen: " + G.currentEvent.eventReward)
 
             eventScreenContents = (
                 <div>
                     <span className="inGameText">{G.currentEvent.eventReward.description}</span>
                     <div className="event-button-container">
-                        <button onClick={() => { events.setPhase("endTurnScreen") }} className="answerButton">Proceed</button>
+                        <button onClick={() => { events.setPhase("endTurnScreen"); moves.pickUpItem(G.currentEvent.eventReward) }} className="answerButton">Proceed</button>
                     </div>
                 </div>
             )
             break;
 
         case "wrongAnswerScreen":
+            const incorrectIndex = G.players[ctx.currentPlayer].selectedOption;
+            console.log("This is index of users incorrect answer: "+ incorrectIndex)
+            const resultAnswer = G.currentEvent.results[incorrectIndex];
             eventScreenContents = (
                 <div>
-                    <span className="inGameText">{G.currentEvent.onIncorrect}</span>
+                    <span className="inGameText">{resultAnswer}</span>
                     <div className="event-button-container">
                         <button onClick={() => events.setPhase("endTurnScreen")} className="answerButton">End Turn</button>
                     </div>
                 </div>
             )
             break;
+
 
         case "winningGameScreen":
             eventScreenContents = (
@@ -187,10 +239,10 @@ export function UpwardMobilityBoard ({ctx, G, moves, events, eventsArray}){
                 {eventScreenContents}
             </div>
 
-            <svg className="GameProgression">
+            <div className="GameProgression" id = "progressionDiv">
                 <rect id="GameProgressionMenu" rx="0" ry="0" x="0" y="0">
                 </rect>
-            </svg>
+            </div>
 
             <img id="ProgresionImage" src="src/Templates/assets/StartFinishScale.png" srcSet="NoPath_-_Copy_6.png 1x, NoPath_-_Copy_6@2x.png 2x"/>
 
@@ -230,6 +282,7 @@ export function UpwardMobilityBoard ({ctx, G, moves, events, eventsArray}){
             {/*Inventory List*/}
             <div className="Inventory">
                 <rect id="Inventory" rx="0" ry="0" x="0" y="0">
+                    {inventoryScreenContents}
                 </rect>
             </div>
             <svg className="InventoryLabel">
