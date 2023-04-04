@@ -20,109 +20,117 @@ export const UpwardsMobility = {
     // wrongAnswerScreen
     // endTurnScreen
 
-  setup: () => ({
-    players: {
-      0: {
-        position: 0,
-        inventory: ["item 1", "item 2", "item 3"],
-          buffs: [],
-          currency: 0,
-      },
-      1: {
-        position: 0,
-        inventory: ["item 1", "item 2", "item 3"],
-          buffs: [],
-          currency: 0,
-      },
-        moveDist: 0,
-    },
+    setup: () => ({
+        players: {
+            0: {
+                position: 0,
+                inventory: [
+                    { name: "Staff of MoMoney", image: "", description: "item 1 description", onUse: "You randomly generate between 0 and 10 coins" },
+                    { name: "Staff of NoMoney", image: "", description: "item 2 description", onUse: "You randomly lose between 0 and 10 coins" },
+                    { name: "Orb of MoMoney", image: "", description: "item 3 description", onUse: "You gain the buff of MoMoney for 3 turns." }
+                ],
+                buffs: [],
+                currency: 0,
+            },
+            1: {
+                position: 0,
+                inventory: [
+                    { name: "Staff of MoMoney", image: "", description: "item 1 description", onUse: "You randomly generate between 0 and 10 coins" },
+                    { name: "Staff of NoMoney", image: "", description: "item 2 description", onUse: "You randomly lose between 0 and 10 coins" },
+                    { name: "Orb of MoMoney", image: "", description: "item 3 description", onUse: "You gain the buff of MoMoney for 3 turns." }
+                ],
+                buffs: [],
+                currency: 0,
+            },
+            moveDist: 0,
+        },
 
-      currentEvent: null,
+        currentEvent: null,
 
-      board: {
-          0: { currency: 0 },
-          1: { currency: 2 },
-          2: { currency: 2 },
-          3: { currency: -1 },
-          4: { currency: 3 },
-          5: { currency: 5, },
-          6: { currency: 1 },
-          7: { currency: 0 },
-          8: { currency: 0 },
-          9: { currency: -2 },
-          10: { currency: 0 },
-          11: { currency: 0 },
-          12: { currency: 2 },
-          13: { currency: 2 },
-          14: { currency: -1 },
-          15: { currency: 3 },
-          16: { currency: -2 },
-          17: { currency: 1 },
-          18: { currency: 2 },
-          19: { currency: 0 },
-          20: { currency: -2 },
-          21: { currency: 2 },
-          22: { currency: -2 },
-          23: { currency: -2 },
-          24: { currency: 0 },
-          25: { currency: 0 },
-      },
+        board: {
+            0: { currency: 0 },
+            1: { currency: 2 },
+            2: { currency: 2 },
+            3: { currency: -1 },
+            4: { currency: 3 },
+            5: { currency: 5, },
+            6: { currency: 1 },
+            7: { currency: 0 },
+            8: { currency: 0 },
+            9: { currency: -2 },
+            10: { currency: 0 },
+            11: { currency: 0 },
+            12: { currency: 2 },
+            13: { currency: 2 },
+            14: { currency: -1 },
+            15: { currency: 3 },
+            16: { currency: -2 },
+            17: { currency: 1 },
+            18: { currency: 2 },
+            19: { currency: 0 },
+            20: { currency: -2 },
+            21: { currency: 2 },
+            22: { currency: -2 },
+            23: { currency: -2 },
+            24: { currency: 0 },
+            25: { currency: 0 },
+        },
 
 
-  }),
+    }),
     turn: {
         order: TurnOrder.CONTINUE,
     },
 
     // Define the moves for rolling the dice and updating the game state.
     moves: {
-      rollDice: ({G, ctx, events}) => {
-          const die1 = Math.floor(Math.random() * 6) + 1;
-          const die2 = Math.floor(Math.random() * 6) + 1;
-          let moveDist = die1 + die2;
-          G.moveDist = moveDist;
-          G.players[ctx.currentPlayer].position += moveDist;
+        rollDice: ({G, ctx, events}) => {
+            const die1 = Math.floor(Math.random() * 6) + 1;
+            const die2 = Math.floor(Math.random() * 6) + 1;
+            let moveDist = die1 + die2;
+            G.moveDist = moveDist;
+            G.players[ctx.currentPlayer].position += moveDist;
 
-          // Check for players active buffs
-          // G.players[ctx.currentPlayer].buffs.forEach((buff) => {
-          //     if (buff.type === "moMoneyBuff") {
-          //         moveDist += 1;
-          //         buff.duration--;
-          //         if (buff.duration === 0) {
-          //             G.players[ctx.currentPlayer].buffs.splice(
-          //                 G.players[ctx.currentPlayer].buffs.indexOf(buff),
-          //                 1
-          //             );
-          //         }
-          //     }
-          // });
+            // Check for players active buffs
+            // G.players[ctx.currentPlayer].buffs.forEach((buff) => {
+            //     if (buff.type === "moMoneyBuff") {
+            //         moveDist += 1;
+            //         buff.duration--;
+            //         if (buff.duration === 0) {
+            //             G.players[ctx.currentPlayer].buffs.splice(
+            //                 G.players[ctx.currentPlayer].buffs.indexOf(buff),
+            //                 1
+            //             );
+            //         }
+            //     }
+            // });
 
-          G.players[ctx.currentPlayer].buffs.forEach((buff, index) => {
-              switch (buff.name) {
-                  case "Buff of Mo Money":
-                      G.players[ctx.currentPlayer].currency += 2;
-                      buff.duration--;
+            G.players[ctx.currentPlayer].buffs.forEach((buff, index) => {
+                switch (buff.name) {
+                    case "Buff of Mo Money":
+                        G.players[ctx.currentPlayer].currency += 2;
+                        buff.duration--;
 
-                      if (buff.duration === 0) {
-                          G.players[ctx.currentPlayer].buffs.splice(index, 1);
-                      }
-                      break;
-              }
-          });
+                        if (buff.duration === 0) {
+                            G.players[ctx.currentPlayer].buffs.splice(index, 1);
+                        }
+                        break;
+                }
+            });
 
-          G.currentEvent = eventsArray[Math.floor(Math.random() * eventsArray.length)];
+            G.currentEvent = eventsArray[Math.floor(Math.random() * eventsArray.length)];
 
-          console.log("current event reward type: ", G.currentEvent.eventReward.type)
+            console.log("current event reward type: ", G.currentEvent.eventReward.type)
 
-          if (G.currentEvent.eventReward.type === "item") {
-              G.players[ctx.currentPlayer].inventory.push(G.currentEvent.eventReward.item.name);
-          }
-          if (G.currentEvent.eventReward.type === "buff") {
-              G.players[ctx.currentPlayer].buffs.push(G.currentEvent.eventReward.buff);
-          }
+            if (G.currentEvent.eventReward.type === "item") {
+                G.players[ctx.currentPlayer].inventory.push(G.currentEvent.eventReward.item.name);
+            }
+            if (G.currentEvent.eventReward.type === "buff") {
+                G.players[ctx.currentPlayer].buffs.push(G.currentEvent.eventReward.buff);
+            }
 
-          events.setPhase("eventOrItemScreen");
-      },
+            events.setPhase("eventOrItemScreen");
+        },
 
         addCurrency: ({G, ctx, events}, currency) => {
             G.players[ctx.currentPlayer].currency += currency;
@@ -152,16 +160,23 @@ export const UpwardsMobility = {
 
         useItem: ({G, ctx, events}, item) => {
 
-          console.log("use item function");
+            console.log("use item function");
 
-          switch (item) {
+            switch (item) {
                 case "Staff of MoMoney":
                     G.players[ctx.currentPlayer].currency += Math.random() * 5;
                     break;
-          }
+                case "Staff of NoMoney":
+                    G.players[ctx.currentPlayer].currency -= Math.random() * 5;
+                    break;
+                case "Orb of MoMoney":
+                    G.players[ctx.currentPlayer].buffs.push({name: "Buff of Mo Money", duration: 3});
+                    break;
+            }
 
-          const itemIndex = G.players[ctx.currentPlayer].inventory.indexOf(item);
-          G.players[ctx.currentPlayer].inventory.splice(itemIndex, 1);
+
+            const itemIndex = G.players[ctx.currentPlayer].inventory.indexOf(item);
+            G.players[ctx.currentPlayer].inventory.splice(itemIndex, 1);
 
         },
 
@@ -196,6 +211,12 @@ export const UpwardsMobility = {
         },
         pickUpItemScreen: {
 
-        }
+        },
+        itemEffectResultScreen: {
+
+        },
+        useItemOnPlayerScreen: {
+
+        },
     },
 }
